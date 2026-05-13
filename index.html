@@ -204,22 +204,56 @@
 
         /* SKILLS */
         .skills-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 25px;
+            max-width: 1100px;
+            margin: auto;
         }
-
+        
         .skill {
             background: #1e293b;
-            padding: 15px 25px;
-            border-radius: 12px;
+            border-radius: 18px;
+            padding: 25px 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             transition: 0.3s;
+            min-height: 150px;
         }
-
+        
         .skill:hover {
+            transform: translateY(-6px);
             background: #38bdf8;
             color: black;
+        }
+        
+        .skill img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            margin-bottom: 12px;
+        }
+        
+        .skill span {
+            font-size: 1rem;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        /* TABLET */
+        @media (max-width: 900px) {
+            .skills-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        /* MOBILE */
+        @media (max-width: 600px) {
+            .skills-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
 
         /* CONTACT */
