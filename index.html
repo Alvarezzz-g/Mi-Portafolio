@@ -1,547 +1,452 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mi Portafolio</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #0f0f0f;
-      --surface: #1a1a1a;
-      --border: #2a2a2a;
-      --text: #f0ede8;
-      --muted: #888;
-      --accent: #c9a96e;
-      --accent-dim: #7a5e30;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Portafolio</title>
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    html { scroll-behavior: smooth; }
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      line-height: 1.7;
-      cursor: none;
-    }
+        html {
+            scroll-behavior: smooth;
+        }
 
-    /* CURSOR */
-    .cursor {
-      width: 10px; height: 10px;
-      background: var(--accent);
-      border-radius: 50%;
-      position: fixed;
-      pointer-events: none;
-      z-index: 9999;
-      transform: translate(-50%, -50%);
-      transition: transform 0.1s ease, width 0.2s, height 0.2s;
-    }
-    .cursor.hover { width: 32px; height: 32px; background: transparent; border: 1.5px solid var(--accent); }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #0f172a;
+            color: white;
+            line-height: 1.6;
+        }
 
-    /* NAV */
-    nav {
-      position: fixed; top: 0; width: 100%; z-index: 100;
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 1.5rem 4rem;
-      background: rgba(15,15,15,0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 0.5px solid var(--border);
-    }
-    .nav-logo {
-      font-family: 'DM Serif Display', serif;
-      font-size: 1.1rem;
-      color: var(--accent);
-      letter-spacing: 0.05em;
-      text-decoration: none;
-    }
-    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
-    .nav-links a {
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 0.85rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      transition: color 0.2s;
-    }
-    .nav-links a:hover { color: var(--text); }
+        /* NAVBAR */
+        .navbar {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 8%;
+            background: #111827;
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+        }
 
-    /* HERO */
-    #hero {
-      min-height: 100vh;
-      display: flex; align-items: center;
-      padding: 0 4rem;
-      position: relative;
-      overflow: hidden;
-    }
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4rem;
-      align-items: center;
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    .hero-label {
-      font-size: 0.75rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 1.5rem;
-      opacity: 0;
-      animation: fadeUp 0.8s 0.2s forwards;
-    }
-    .hero-name {
-      font-family: 'DM Serif Display', serif;
-      font-size: clamp(3rem, 6vw, 5.5rem);
-      line-height: 1.05;
-      margin-bottom: 1.5rem;
-      opacity: 0;
-      animation: fadeUp 0.8s 0.4s forwards;
-    }
-    .hero-name em {
-      font-style: italic;
-      color: var(--accent);
-    }
-    .hero-role {
-      font-size: 1rem;
-      color: var(--muted);
-      margin-bottom: 2.5rem;
-      opacity: 0;
-      animation: fadeUp 0.8s 0.6s forwards;
-    }
-    .hero-cta {
-      display: inline-flex; align-items: center; gap: 0.75rem;
-      color: var(--text);
-      text-decoration: none;
-      font-size: 0.9rem;
-      letter-spacing: 0.05em;
-      border-bottom: 1px solid var(--accent-dim);
-      padding-bottom: 2px;
-      transition: border-color 0.2s, color 0.2s;
-      opacity: 0;
-      animation: fadeUp 0.8s 0.8s forwards;
-    }
-    .hero-cta:hover { border-color: var(--accent); color: var(--accent); }
-    .hero-image {
-      opacity: 0;
-      animation: fadeUp 0.8s 0.5s forwards;
-    }
-    .hero-image .photo-frame {
-      width: 100%;
-      aspect-ratio: 3/4;
-      background: var(--surface);
-      border: 0.5px solid var(--border);
-      border-radius: 4px;
-      display: flex; align-items: center; justify-content: center;
-      position: relative;
-      overflow: hidden;
-    }
-    .hero-image .photo-frame img {
-      width: 100%; height: 100%;
-      object-fit: cover;
-      display: none; /* mostrar cuando agregues la foto */
-    }
-    .photo-placeholder {
-      display: flex; flex-direction: column; align-items: center; gap: 1rem;
-      color: var(--muted); font-size: 0.8rem; text-align: center;
-    }
-    .photo-placeholder svg { opacity: 0.3; }
-    .corner-tag {
-      position: absolute; bottom: 1rem; right: 1rem;
-      font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
-      color: var(--muted);
-    }
+        .logo {
+            color: #38bdf8;
+            font-size: 1.8rem;
+        }
 
-    /* SECCIONES */
-    section { padding: 7rem 4rem; max-width: 1200px; margin: 0 auto; }
-    .section-label {
-      font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase;
-      color: var(--accent); margin-bottom: 0.75rem;
-    }
-    .section-title {
-      font-family: 'DM Serif Display', serif;
-      font-size: clamp(2rem, 4vw, 3rem);
-      margin-bottom: 3rem;
-      line-height: 1.15;
-    }
-    .section-divider {
-      width: 100%; height: 0.5px;
-      background: var(--border);
-      margin: 0 auto;
-    }
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+        }
 
-    /* SOBRE MÍ */
-    .about-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start;
-    }
-    .about-text { font-size: 1.05rem; color: #b0aca6; line-height: 1.9; }
-    .about-text p + p { margin-top: 1.25rem; }
-    .about-data { display: flex; flex-direction: column; gap: 1.5rem; }
-    .data-item { border-top: 0.5px solid var(--border); padding-top: 1rem; }
-    .data-label { font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.25rem; }
-    .data-value { font-size: 0.95rem; }
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            transition: 0.3s;
+        }
 
-    /* HABILIDADES */
-    .skills-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1px;
-      border: 0.5px solid var(--border);
-    }
-    .skill-card {
-      padding: 2rem;
-      background: var(--bg);
-      border: 0.5px solid var(--border);
-      transition: background 0.2s;
-    }
-    .skill-card:hover { background: var(--surface); }
-    .skill-icon { font-size: 1.4rem; margin-bottom: 1rem; color: var(--accent); }
-    .skill-name { font-size: 1rem; font-weight: 500; margin-bottom: 0.5rem; }
-    .skill-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.75rem; }
-    .tag {
-      font-size: 0.7rem; letter-spacing: 0.08em;
-      padding: 3px 10px; border: 0.5px solid var(--border);
-      color: var(--muted);
-    }
+        .nav-links a:hover {
+            color: #38bdf8;
+        }
 
-    /* PROYECTOS */
-    .projects-list { display: flex; flex-direction: column; }
-    .project-item {
-      display: grid; grid-template-columns: 80px 1fr auto;
-      gap: 2rem; align-items: start;
-      padding: 2rem 0;
-      border-top: 0.5px solid var(--border);
-      transition: padding-left 0.2s;
-      text-decoration: none; color: inherit;
-    }
-    .project-item:hover { padding-left: 0.5rem; }
-    .project-num { font-size: 0.72rem; color: var(--muted); padding-top: 4px; letter-spacing: 0.1em; }
-    .project-name { font-family: 'DM Serif Display', serif; font-size: 1.4rem; margin-bottom: 0.5rem; }
-    .project-desc { font-size: 0.9rem; color: var(--muted); }
-    .project-stack { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.75rem; }
-    .project-arrow { font-size: 1.2rem; color: var(--accent); margin-top: 4px; }
+        #menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+        }
 
-    /* CONTACTO */
-    .contact-inner {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start;
-    }
-    .contact-text { font-size: 1.05rem; color: #b0aca6; line-height: 1.9; }
-    .contact-links { display: flex; flex-direction: column; gap: 0; }
-    .contact-link {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 1.25rem 0;
-      border-top: 0.5px solid var(--border);
-      text-decoration: none; color: var(--text);
-      font-size: 0.9rem;
-      transition: color 0.2s, padding-left 0.2s;
-    }
-    .contact-link:hover { color: var(--accent); padding-left: 0.4rem; }
-    .contact-link span { color: var(--muted); font-size: 0.8rem; }
+        /* HERO */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 50px;
+            padding: 120px 8% 50px;
+            flex-wrap: wrap;
+        }
 
-    /* FOOTER */
-    footer {
-      border-top: 0.5px solid var(--border);
-      padding: 2rem 4rem;
-      display: flex; justify-content: space-between; align-items: center;
-      font-size: 0.8rem; color: var(--muted);
-      max-width: 100%;
-    }
+        .hero-text {
+            max-width: 600px;
+        }
 
-    /* ANIMACIONES */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .reveal {
-      opacity: 0; transform: translateY(24px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
-    }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
+        .hero-text h2 {
+            font-size: 3rem;
+        }
 
-    @media (max-width: 768px) {
-      nav { padding: 1.2rem 1.5rem; }
-      .nav-links { display: none; }
-      #hero, section { padding: 5rem 1.5rem; }
-      .hero-grid, .about-grid, .contact-inner { grid-template-columns: 1fr; }
-      .hero-image { display: none; }
-      footer { flex-direction: column; gap: 0.5rem; text-align: center; padding: 1.5rem; }
-      .project-item { grid-template-columns: 50px 1fr; }
-      .project-arrow { display: none; }
-    }
-  </style>
+        .hero-text span {
+            color: #38bdf8;
+        }
+
+        .hero-text h3 {
+            font-size: 1.5rem;
+            margin: 10px 0;
+            color: #cbd5e1;
+        }
+
+        .hero-text p {
+            margin: 20px 0;
+            color: #cbd5e1;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            background: #38bdf8;
+            color: black;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #38bdf8;
+            color: white;
+        }
+
+        .hero-image img {
+            width: 350px;
+            border-radius: 20px;
+            border: 4px solid #38bdf8;
+        }
+
+        /* SECTIONS */
+        .section {
+            padding: 100px 8%;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 50px;
+            color: #38bdf8;
+        }
+
+        /* ABOUT */
+        .about-container {
+            max-width: 900px;
+            margin: auto;
+            text-align: center;
+            color: #cbd5e1;
+            font-size: 1.1rem;
+        }
+
+        /* PROJECTS */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .project-card {
+            background: #1e293b;
+            border-radius: 20px;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .project-card:hover {
+            transform: translateY(-8px);
+        }
+
+        .project-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+
+        .project-card h3 {
+            padding: 15px 20px 0;
+        }
+
+        .project-card p {
+            padding: 10px 20px;
+            color: #cbd5e1;
+        }
+
+        .project-links {
+            padding: 20px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .project-links a {
+            text-decoration: none;
+            color: #38bdf8;
+            font-weight: 600;
+        }
+
+        /* SKILLS */
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .skill {
+            background: #1e293b;
+            padding: 15px 25px;
+            border-radius: 12px;
+            transition: 0.3s;
+        }
+
+        .skill:hover {
+            background: #38bdf8;
+            color: black;
+        }
+
+        /* CONTACT */
+        .contact-container {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #cbd5e1;
+        }
+
+        .contact-container p {
+            margin: 10px 0;
+        }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            padding: 30px;
+            background: #111827;
+            color: #94a3b8;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+
+            #menu-btn {
+                display: block;
+            }
+
+            .nav-links {
+                position: absolute;
+                top: 80px;
+                right: 0;
+                background: #111827;
+                width: 100%;
+                flex-direction: column;
+                align-items: center;
+                padding: 20px 0;
+                display: none;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .hero {
+                text-align: center;
+            }
+
+            .hero-text h2 {
+                font-size: 2.2rem;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+            }
+
+            .hero-image img {
+                width: 260px;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<div class="cursor" id="cursor"></div>
+    <!-- NAVBAR -->
+    <header>
+        <nav class="navbar">
+            <h1 class="logo">TU NOMBRE</h1>
 
-<nav>
-  <!-- REEMPLAZÁ con tus iniciales o nombre corto -->
-  <a class="nav-logo" href="#hero">Gustavo Alvarez</a>
-  <ul class="nav-links">
-    <li><a href="#sobre-mi">Sobre mí</a></li>
-    <li><a href="#habilidades">Habilidades</a></li>
-    <li><a href="#proyectos">Proyectos</a></li>
-    <li><a href="#contacto">Contacto</a></li>
-  </ul>
-</nav>
+            <ul class="nav-links">
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#sobre-mi">Sobre mí</a></li>
+                <li><a href="#proyectos">Proyectos</a></li>
+                <li><a href="#habilidades">Habilidades</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
 
-<!-- ═══════════════════ HERO ═══════════════════ -->
-<section id="hero" style="padding-top: 0;">
-  <div class="hero-grid">
-    <div>
-      <!-- REEMPLAZÁ con tu rol/especialidad -->
-      <p class="hero-label">Desarrollador · Diseñador · Tester</p>
+            <button id="menu-btn">☰</button>
+        </nav>
+    </header>
 
-      <!-- REEMPLAZÁ con tu nombre -->
-      <h1 class="hero-name">Gustavo</em><br>Alvarez</h1>
+    <!-- HERO -->
+    <section id="inicio" class="hero">
+        <div class="hero-text">
+            <h2>Hola, soy <span>TU NOMBRE</span></h2>
+            <h3>Desarrollador Backend / Full Stack</h3>
 
-      <!-- REEMPLAZÁ con una descripción breve -->
-      <p class="hero-role">Construyo interfaces limpias y soluciones que importan.<br>Basado en Buenos Aires, Argentina.</p>
+            <p>
+                Acá podés escribir una breve descripción sobre vos,
+                tus objetivos y lo que sabés hacer.
+            </p>
 
-      <a class="hero-cta" href="#proyectos">
-        Ver proyectos
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </a>
-    </div>
-
-    <div class="hero-image">
-      <div class="photo-frame">
-        <!-- OPCIÓN A: dejá esto y se muestra el placeholder -->
-        <div class="photo-placeholder">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-            <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-          </svg>
-          <span>foto <br><code style="font-size:0.65rem">img src="tu-foto.jpg"</code></span>
+            <div class="hero-buttons">
+                <a href="#proyectos" class="btn">Ver proyectos</a>
+                <a href="#" class="btn btn-outline">Descargar CV</a>
+            </div>
         </div>
-        <!-- OPCIÓN B: descomentá y cambiá la ruta -->
-        <!-- <img src="tu-foto.jpg" alt="Tu nombre"> -->
-        <span class="corner-tag">© 2025</span>
-      </div>
-    </div>
-  </div>
-</section>
 
-<div class="section-divider"></div>
-
-<!-- ═══════════════════ SOBRE MÍ ═══════════════════ -->
-<section id="sobre-mi">
-  <div class="reveal">
-    <p class="section-label">01 — Sobre mí</p>
-    <h2 class="section-title">Quién soy</h2>
-  </div>
-  <div class="about-grid reveal">
-    <div class="about-text">
-      <!-- REEMPLAZÁ con tu historia -->
-      <p>
-        Soy un desarrollador apasionado por crear experiencias digitales que combinen funcionalidad y estética. Con X años de experiencia en el sector, me especializo en [tu especialidad].
-      </p>
-      <p>
-        Actualmente trabajo en [empresa/proyecto actual] donde me enfoco en [qué hacés]. Me interesa especialmente [área de interés].
-      </p>
-      <p>
-        Cuando no estoy programando, me encontrás [hobby 1], [hobby 2] o aprendiendo sobre [tema de interés].
-      </p>
-    </div>
-    <div class="about-data">
-      <!-- REEMPLAZÁ cada campo con tu información -->
-      <div class="data-item">
-        <p class="data-label">Ubicación</p>
-        <p class="data-value">Buenos Aires, Argentina</p>
-      </div>
-      <div class="data-item">
-        <p class="data-label">Disponibilidad</p>
-        <p class="data-value">Disponible para proyectos freelance</p>
-      </div>
-      <div class="data-item">
-        <p class="data-label">Experiencia</p>
-        <p class="data-value">X años en desarrollo web</p>
-      </div>
-      <div class="data-item">
-        <p class="data-label">Idiomas</p>
-        <p class="data-value">Español · Inglés</p>
-      </div>
-      <div class="data-item">
-        <p class="data-label">Educación</p>
-        <p class="data-value">Estudiante de Ing. en Sistemas</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="section-divider"></div>
-
-<!-- ═══════════════════ HABILIDADES ═══════════════════ -->
-<section id="habilidades">
-  <div class="reveal">
-    <p class="section-label">02 — Habilidades</p>
-    <h2 class="section-title">Tecnologías y herramientas</h2>
-  </div>
-  <div class="skills-grid reveal">
-
-    <!-- REEMPLAZÁ cada tarjeta con tus habilidades reales -->
-    <div class="skill-card">
-      <div class="skill-icon">⟨/⟩</div>
-      <p class="skill-name">Frontend</p>
-      <div class="skill-tags">
-        <span class="tag">HTML</span>
-        <span class="tag">CSS</span>
-        <span class="tag">JavaScript</span>
-        <!-- Agregá más tecnologías -->
-      </div>
-    </div>
-
-    <div class="skill-card">
-      <div class="skill-icon">◈</div>
-      <p class="skill-name">Backend</p>
-      <div class="skill-tags">
-        <span class="tag">Node.js</span>
-        <span class="tag">Perl</span>
-        <span class="tag">PostgreSQL</span>
-        <!-- Agregá más tecnologías -->
-      </div>
-    </div>
-
-    <div class="skill-card">
-      <div class="skill-icon">⬡</div>
-      <p class="skill-name">DevOps</p>
-      <div class="skill-tags">
-        <span class="tag">Docker</span>
-        <span class="tag">Linux</span>
-        <!-- Agregá más tecnologías -->
-      </div>
-    </div>
-
-    <div class="skill-card">
-      <div class="skill-icon">◎</div>
-      <p class="skill-name">Otras habilidades</p>
-      <div class="skill-tags">
-        <span class="tag">Git</span>
-        <span class="tag">Agrega más</span>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<div class="section-divider"></div>
-
-<!-- ═══════════════════ PROYECTOS ═══════════════════ -->
-<section id="proyectos">
-  <div class="reveal">
-    <p class="section-label">03 — Proyectos</p>
-    <h2 class="section-title">Trabajo seleccionado</h2>
-  </div>
-  <div class="projects-list reveal">
-
-    <!-- REEMPLAZÁ cada proyecto con el tuyo. Cambiá href="#" por la URL real -->
-    <a class="project-item" href="#" target="_blank">
-      <span class="project-num">01</span>
-      <div>
-        <p class="project-name">Nombre del Proyecto</p>
-        <p class="project-desc">Descripción breve de qué hace el proyecto y qué problema resuelve.</p>
-        <div class="project-stack">
-          <span class="tag">React</span>
-          <span class="tag">Node.js</span>
-          <span class="tag">PostgreSQL</span>
+        <div class="hero-image">
+            <img src="https://via.placeholder.com/350" alt="Foto perfil">
         </div>
-      </div>
-      <span class="project-arrow">↗</span>
-    </a>
+    </section>
 
-    <a class="project-item" href="#" target="_blank">
-      <span class="project-num">02</span>
-      <div>
-        <p class="project-name">Nombre del Proyecto</p>
-        <p class="project-desc">Descripción breve de qué hace el proyecto y qué problema resuelve.</p>
-        <div class="project-stack">
-          <span class="tag">Perl</span>
-          <span class="tag">Docker</span>
+    <!-- SOBRE MI -->
+    <section id="sobre-mi" class="section">
+        <h2 class="section-title">Sobre mí</h2>
+
+        <div class="about-container">
+            <p>
+                Escribí acá información sobre vos.
+                Podés contar qué estudiás, qué tecnologías usás,
+                qué experiencia tenés y qué tipo de trabajo buscás.
+            </p>
         </div>
-      </div>
-      <span class="project-arrow">↗</span>
-    </a>
+    </section>
 
-    <a class="project-item" href="#" target="_blank">
-      <span class="project-num">03</span>
-      <div>
-        <p class="project-name">Nombre del Proyecto</p>
-        <p class="project-desc">Descripción breve de qué hace el proyecto y qué problema resuelve.</p>
-        <div class="project-stack">
-          <span class="tag">HTML</span>
-          <span class="tag">CSS</span>
-          <span class="tag">JS</span>
+    <!-- PROYECTOS -->
+    <section id="proyectos" class="section">
+        <h2 class="section-title">Proyectos</h2>
+
+        <div class="projects-grid">
+
+            <div class="project-card">
+                <img src="https://via.placeholder.com/500x250" alt="Proyecto 1">
+                <h3>Sistema ABM con Perl</h3>
+
+                <p>
+                    Sistema CRUD desarrollado con Perl y PostgreSQL.
+                </p>
+
+                <div class="project-links">
+                    <a href="#">GitHub</a>
+                    <a href="#">Demo</a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <img src="https://via.placeholder.com/500x250" alt="Proyecto 2">
+                <h3>API REST con FastAPI</h3>
+
+                <p>
+                    API backend con autenticación JWT y PostgreSQL.
+                </p>
+
+                <div class="project-links">
+                    <a href="#">GitHub</a>
+                    <a href="#">Demo</a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <img src="https://via.placeholder.com/500x250" alt="Proyecto 3">
+                <h3>Portafolio Web</h3>
+
+                <p>
+                    Sitio personal responsive desarrollado con HTML, CSS y JavaScript.
+                </p>
+
+                <div class="project-links">
+                    <a href="#">GitHub</a>
+                    <a href="#">Demo</a>
+                </div>
+            </div>
+
         </div>
-      </div>
-      <span class="project-arrow">↗</span>
-    </a>
+    </section>
 
-    <!-- Duplicá el bloque anterior para agregar más proyectos -->
+    <!-- HABILIDADES -->
+    <section id="habilidades" class="section">
+        <h2 class="section-title">Habilidades</h2>
 
-  </div>
-</section>
+        <div class="skills-container">
+            <div class="skill">HTML</div>
+            <div class="skill">CSS</div>
+            <div class="skill">JavaScript</div>
+            <div class="skill">Python</div>
+            <div class="skill">Django</div>
+            <div class="skill">FastAPI</div>
+            <div class="skill">PostgreSQL</div>
+            <div class="skill">Git</div>
+            <div class="skill">Linux</div>
+        </div>
+    </section>
 
-<div class="section-divider"></div>
+    <!-- CONTACTO -->
+    <section id="contacto" class="section">
+        <h2 class="section-title">Contacto</h2>
 
-<!-- ═══════════════════ CONTACTO ═══════════════════ -->
-<section id="contacto">
-  <div class="reveal">
-    <p class="section-label">04 — Contacto</p>
-    <h2 class="section-title">Hablemos</h2>
-  </div>
-  <div class="contact-inner reveal">
-    <div class="contact-text">
-      <!-- REEMPLAZÁ con tu mensaje de contacto -->
-      <p>
-        ¿Tenés un proyecto en mente o querés hablar de posibles colaboraciones? Estoy disponible para trabajo freelance y posiciones de tiempo completo.
-      </p>
-      <p style="margin-top:1rem;">
-        La mejor forma de contactarme es por email. Te respondo dentro de las 24 horas.
-      </p>
-    </div>
-    <div class="contact-links">
-      <!-- REEMPLAZÁ cada href y texto con tus datos reales -->
-      <a class="contact-link" href="mailto:tu@email.com">
-        tu@email.com
-        <span>Email →</span>
-      </a>
-      <a class="contact-link" href="https://linkedin.com/in/tu-usuario" target="_blank">
-        LinkedIn
-        <span>↗</span>
-      </a>
-      <a class="contact-link" href="https://github.com/tu-usuario" target="_blank">
-        GitHub
-        <span>↗</span>
-      </a>
-      <!-- Agregá más redes si querés -->
-    </div>
-  </div>
-</section>
+        <div class="contact-container">
+            <p>Email: tuemail@gmail.com</p>
+            <p>LinkedIn: linkedin.com/in/tuusuario</p>
+            <p>GitHub: github.com/tuusuario</p>
+        </div>
+    </section>
 
-<footer>
-  <!-- REEMPLAZÁ con tu nombre -->
-  <span>© 2025 Gustavo Alvarez</span>
-  <span>Diseñado y desarrollado por mí</span>
-</footer>
+    <!-- FOOTER -->
+    <footer>
+        <p>© 2026 - TU NOMBRE | Portafolio Profesional</p>
+    </footer>
 
-<script>
-  const cursor = document.getElementById('cursor');
-  document.addEventListener('mousemove', e => {
-    cursor.style.left = e.clientX + 'px';
-    cursor.style.top = e.clientY + 'px';
-  });
-  document.querySelectorAll('a, button').forEach(el => {
-    el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-    el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
-  });
+    <script>
+        const menuBtn = document.getElementById('menu-btn');
+        const navLinks = document.querySelector('.nav-links');
 
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-  }, { threshold: 0.15 });
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-</script>
+        menuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        const sections = document.querySelectorAll('.section');
+
+        window.addEventListener('scroll', () => {
+            sections.forEach(section => {
+                const sectionTop = section.getBoundingClientRect().top;
+
+                if (sectionTop < window.innerHeight - 100) {
+                    section.style.opacity = '1';
+                    section.style.transform = 'translateY(0px)';
+                }
+            });
+        });
+
+        sections.forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(40px)';
+            section.style.transition = 'all 0.6s ease';
+        });
+    </script>
 
 </body>
 </html>
